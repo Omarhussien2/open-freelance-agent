@@ -12,6 +12,9 @@
   <img src="docs/INFRAGRAPHIC.png" alt="معمارية الوكيل الحر: الدماغ والطبقات ويوم العمل في 8 خطوات" width="880">
 </p>
 
+
+[![Architecture diagram of omarhussien2/open-freelance-agent](https://gitdiagram.com/omarhussien2/open-freelance-agent/diagram.png)](https://gitdiagram.com/omarhussien2/open-freelance-agent?utm_source=readme&utm_medium=picture)
+
 وكيل محلي مجاني بالكامل (MIT) يراقب منصات العمل الحر (مستقل / Upwork / LinkedIn)، يفلتر المشاريع المناسبة (remote/hybrid وبالمستوى الوظيفي الصحيح)، ويكتب مسودة عرض من «ملف حقائق» معتمد فيه أرقامك الحقيقية فقط. لا يُرسل أي شيء قبل موافقتك: كل مسودة تصلك على بوت تليجرام من موبايلك — تعدّل النص أو تضغط زر الموافقة — وبعدها فقط يقدّم العرض عبر أتمتة متصفح محلية بإيقاع بشري، ويسجّل كل شيء في شيت جوجل مع تقرير يومي ينتهي دائمًا بـ«المطلوب منك».
 
 ## المعمارية في 4 سطور
