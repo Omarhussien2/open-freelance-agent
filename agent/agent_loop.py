@@ -36,11 +36,11 @@ TOOLS_SPEC = [
         "parameters": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}}},
     {"type": "function", "function": {"name": "snapshot", "description": "Read the current page (semantic outline).",
         "parameters": {"type": "object", "properties": {}}}},
-    {"type": "function", "function": {"click", "description": "Click an element by ref from the latest snapshot.",
+    {"type": "function", "function": {"name": "click", "description": "Click an element by ref from the latest snapshot.",
         "parameters": {"type": "object", "properties": {"ref": {"type": "string"}}, "required": ["ref"]}}},
-    {"type": "function", "function": {"type_text", "description": "Type text into an editable element by ref (replaces content).",
+    {"type": "function", "function": {"name": "type_text", "description": "Type text into an editable element by ref (replaces content).",
         "parameters": {"type": "object", "properties": {"ref": {"type": "string"}, "text": {"type": "string"}}, "required": ["ref", "text"]}}},
-    {"type": "function", "function": {"finish", "description": "Call when done. Put the result summary in the summary field.",
+    {"type": "function", "function": {"name": "finish", "description": "Call when done. Put the result summary in the summary field.",
         "parameters": {"type": "object", "properties": {"success": {"type": "boolean"}, "summary": {"type": "string"}}, "required": ["success", "summary"]}}},
 ]
 
