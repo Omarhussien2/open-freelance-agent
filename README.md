@@ -17,6 +17,8 @@
 
 وكيل محلي مجاني بالكامل (MIT) يراقب منصات العمل الحر (مستقل / Upwork / LinkedIn)، يفلتر المشاريع المناسبة (remote/hybrid وبالمستوى الوظيفي الصحيح)، ويكتب مسودة عرض من «ملف حقائق» معتمد فيه أرقامك الحقيقية فقط. لا يُرسل أي شيء قبل موافقتك: كل مسودة تصلك على بوت تليجرام من موبايلك — تعدّل النص أو تضغط زر الموافقة — وبعدها فقط يقدّم العرض عبر أتمتة متصفح محلية بإيقاع بشري، ويسجّل كل شيء في شيت جوجل مع تقرير يومي ينتهي دائمًا بـ«المطلوب منك».
 
+[![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/omarhussien2/open-freelance-agent?utm_source=readme&utm_medium=badge) 
+
 ## المعمارية في 4 سطور
 
 1. **الدماغ (Brain):** أي موديل OpenRouter مجاني يدعم tool-calling — مُختبَر: `nemotron-3-super-120b:free`، والبديل `cohere/north-mini-code:free`.
