@@ -1,0 +1,17 @@
+# secrets — NEVER commit these
+agent/openrouter_key.txt
+agent/config.json
+agent/telegram_token.txt
+agent/telegram_chat_id.txt
+agent/pending_proposal.json
+agent/outgoing_proposal.txt
+agent/send_out.txt
+agent/decision*.txt
+agent/watcher.log
+agent/watcher.err
+
+# local junk
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

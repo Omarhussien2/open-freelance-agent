@@ -1,0 +1,7 @@
+{
+  "openrouter_key_file": "openrouter_key.txt",
+  "models": ["nvidia/nemotron-3-super-120b-a12b:free", "cohere/north-mini-code:free"],
+  "driver_path": "C:/Users/YOU/AppData/Local/Programs/Cua/cua-driver/bin/cua-driver.exe",
+  "browser_profile": "my-accounts",
+  "allowed_hosts": ["example.com"]
+}

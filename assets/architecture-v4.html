@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Open Freelance Agent — Architecture v4</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Cairo", "Segoe UI", Tahoma, sans-serif; background: #f6f8fb; color: #14202e; width: 1640px; padding: 44px 48px; }
+
+  .top { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #14202e; padding-bottom: 18px; }
+  .top h1 { font-size: 40px; letter-spacing: -0.5px; }
+  .top h1 em { font-style: normal; color: #2563eb; }
+  .top .sub { font-size: 17px; color: #5b6b7c; margin-top: 6px; }
+  .badges { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; max-width: 560px; }
+  .badge { border: 1.5px solid #14202e; border-radius: 999px; padding: 6px 14px; font-size: 14px; font-weight: 700; background: #fff; }
+  .badge.fill { background: #14202e; color: #fff; }
+
+  .grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 26px; margin-top: 26px; }
+  .col-title { font-size: 21px; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .col-title .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+  .layer { background: #fff; border: 1.5px solid #d7dfe9; border-radius: 14px; padding: 16px 18px 14px; margin-bottom: 0; position: relative; }
+  .layer + .connector { height: 22px; display: flex; justify-content: center; align-items: center; }
+  .connector span { width: 2px; height: 100%; background: #b6c3d2; position: relative; }
+  .connector span::after { content: ""; position: absolute; bottom: -1px; right: -4px; border: 5px solid transparent; border-top-color: #b6c3d2; }
+  .layer .head { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .layer .chip { background: #14202e; color: #fff; font-weight: 800; border-radius: 8px; padding: 4px 10px; font-size: 13px; }
+  .layer h3 { font-size: 19px; }
+  .layer p { font-size: 14.5px; color: #3d4c5c; line-height: 1.75; }
+  .layer .tech { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .layer .tech span { font-family: Consolas, monospace; font-size: 12.5px; background: #eef2f7; border: 1px solid #d7dfe9; border-radius: 6px; padding: 3px 8px; color: #29415e; }
+  .l4 { border-right: 5px solid #2563eb; } .l3 { border-right: 5px solid #7c3aed; }
+  .l2 { border-right: 5px solid #0d9488; } .l1 { border-right: 5px solid #b45309; }
+
+  .stations { background: #fff; border: 1.5px solid #d7dfe9; border-radius: 14px; padding: 18px 20px; }
+  .st { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px dashed #e2e8f0; align-items: flex-start; }
+  .st:last-child { border-bottom: none; }
+  .st .n { min-width: 34px; height: 34px; border-radius: 10px; background: #eef2f7; border: 1.5px solid #d7dfe9; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #29415e; }
+  .st h4 { font-size: 16px; margin-bottom: 2px; }
+  .st p { font-size: 13.5px; color: #5b6b7c; line-height: 1.6; }
+  .st.amber .n { background: #fef3c7; border-color: #d97706; color: #92400e; }
+  .st.red .n { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+  .st.green .n { background: #d1fae5; border-color: #059669; color: #065f46; }
+  .st.red h4 { color: #b91c1c; }
+
+  .bottom { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px; margin-top: 26px; }
+  .box { background: #fff; border: 1.5px solid #d7dfe9; border-radius: 14px; padding: 16px 18px; }
+  .box h3 { font-size: 17px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #eef2f7; }
+  .box.wire h3 { border-color: #dbeafe; }
+  .proto li { font-size: 14px; line-height: 1.9; list-style: none; padding-right: 22px; position: relative; color: #3d4c5c; }
+  .proto li::before { content: "◆"; position: absolute; right: 0; font-size: 10px; top: 7px; }
+  .proto .ok { color: #059669; } .proto .warn { color: #b45309; } .proto .no { color: #dc2626; }
+  .rules li { font-size: 14px; line-height: 1.9; list-style: none; padding-right: 22px; position: relative; color: #3d4c5c; }
+  .rules li::before { content: "✓"; position: absolute; right: 0; color: #059669; font-weight: 800; }
+  .cost { text-align: center; padding-top: 26px; }
+  .cost .zero { font-size: 56px; font-weight: 800; color: #059669; line-height: 1; }
+  .cost .per { font-size: 15px; color: #5b6b7c; margin-top: 8px; line-height: 1.8; }
+
+  .flow { margin-top: 24px; background: #14202e; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; overflow: hidden; }
+  .flow .lbl { color: #93a5b8; font-size: 13.5px; font-weight: 700; white-space: nowrap; }
+  .flow .step { background: #1f3247; color: #e8eef5; font-size: 13.5px; padding: 7px 12px; border-radius: 8px; white-space: nowrap; }
+  .flow .step.hot { background: #dc2626; color: #fff; font-weight: 700; }
+  .flow .step.hum { background: #d97706; color: #fff; font-weight: 700; }
+  .flow .arr { color: #4a5f76; font-size: 16px; }
+
+  .footer { display: flex; justify-content: space-between; margin-top: 20px; color: #7b8a99; font-size: 13.5px; }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div>
+    <h1>Open <em>Freelance</em> Agent</h1>
+    <div class="sub">وكيل فريلانس محلي بالكامل: يرصد، يكتب، يستأذنك، ثم يقدّم — هيكلة مفتوحة المصدر مجانية 100%</div>
+  </div>
+  <div class="badges">
+    <div class="badge fill">100% FREE</div>
+    <div class="badge">OPEN SOURCE · MIT</div>
+    <div class="badge">LOCAL-FIRST</div>
+    <div class="badge">NO PASSWORDS</div>
+    <div class="badge">HUMAN GATE</div>
+  </div>
+</div>
+
+<div class="grid">
+  <div>
+    <div class="col-title"><span class="dot" style="background:#2563eb"></span>الهيكل: أربع طبقات فوق بعض</div>
+
+    <div class="layer l4">
+      <div class="head"><div class="chip">L4</div><h3>واجهة المالك — أنت</h3></div>
+      <p>بوت تليجرام: زرار «موافق» أو انسخ-عدّل-ابعت. وإيميل احتياطي. وتقرير يومي يقفل بـ«المطلوب منك».</p>
+      <div class="tech"><span>Telegram Bot API (free)</span><span>watch_approval.py</span><span>Apps Script Mail</span></div>
+    </div>
+    <div class="connector"><span></span></div>
+
+    <div class="layer l3">
+      <div class="head"><div class="chip">L3</div><h3>العقل — موديل مجاني</h3></div>
+      <p>أي موديل OpenRouter بـ tool-calling: يقرأ الصفحات، يقرر الخطوة الجاية، ويستخرج البيانات. ولو حد فيهم اتصد (429) يركب اللي بعده.</p>
+      <div class="tech"><span>nemotron-3-super:free</span><span>north-mini-code:free</span><span>fallback chain</span></div>
+    </div>
+    <div class="connector"><span></span></div>
+
+    <div class="layer l2">
+      <div class="head"><div class="chip">L2</div><h3>الإيد والعين — Cua Driver</h3></div>
+      <p>أداة مفتوحة المصدر (MIT) تقود متصفح Chromium معزول ببروفايل مسمّى محفوظ: أنت تسجل دخولك مرة واحدة بإيدك، والوكيل يلاقي الحسابات فاتحة بعدها — من غير ما يشوف باسورد أبدًا.</p>
+      <div class="tech"><span>browser_navigate / click / type</span><span>semantic_v2 snapshots</span><span>isolated_named profile</span></div>
+    </div>
+    <div class="connector"><span></span></div>
+
+    <div class="layer l1">
+      <div class="head"><div class="chip">L1</div><h3>الذاكرة — مصادر الحقيقة</h3></div>
+      <p>شيت تتبع (سجل + قايمة اليوم + موافقات)، ملف الحقائق المعتمدة (أرقامك الموثقة بس)، ومحطة الهيومنايزر اللي أي نص لازم يعدي عليها قبل ما يخرج.</p>
+      <div class="tech"><span>Google Sheet + Apps Script</span><span>approved-facts file</span><span>humanizer station</span></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="col-title"><span class="dot" style="background:#dc2626"></span>العملية: يوم الوكيل في 8 محطات</div>
+    <div class="stations">
+      <div class="st"><div class="n">0</div><div><h4>فحص الصباح</h4><p>الخدمة شغالة؟ الجلسات سليمة؟ قبل أي حركة.</p></div></div>
+      <div class="st"><div class="n">1</div><div><h4>جولة الرصد</h4><p>مسح المنصات: شغل جديد + ردود على العروض القائمة.</p></div></div>
+      <div class="st"><div class="n">2</div><div><h4>الفلترة</h4><p>remote/hybrid فقط + المستوى الصح للتخصص، وقايمة مرشحين لليوم.</p></div></div>
+      <div class="st"><div class="n">3</div><div><h4>كتابة العرض</h4><p>من ملف الحقائق المعتمدة — لا رقم ولا إنجاز من غير مصدر.</p></div></div>
+      <div class="st amber"><div class="n">4</div><div><h4>محطة الهيومنايزر</h4><p>إزالة أنماط الكتابة الآلية وإعادة الصياغة بصوت بشري. إجبارية لكل نص.</p></div></div>
+      <div class="st red"><div class="n">5</div><div><h4>البوابة الحمراء — موافقتك</h4><p>العرض يروح تليجرام: زرار موافق، أو تعدّل وتبعت نسختك. من غير قرار صريح = مفيش تقديم، ولا استثناء.</p></div></div>
+      <div class="st green"><div class="n">6</div><div><h4>التقديم بإيقاع بشري</h4><p>حد يومي (مثلًا عرض واحد/يوم لكل منصة) حماية للحساب من الحظر.</p></div></div>
+      <div class="st green"><div class="n">7</div><div><h4>التسجيل والتقرير</h4><p>صف في السجل + تقرير قصير ينتهي بـ«المطلوب منك».</p></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="flow">
+  <div class="lbl">مسار البروبوزال:</div>
+  <div class="step">رصد</div><div class="arr">←</div>
+  <div class="step">مسودة من الحقائق</div><div class="arr">←</div>
+  <div class="step hum">هيومنايزر</div><div class="arr">←</div>
+  <div class="step">تليجرام عندك</div><div class="arr">←</div>
+  <div class="step hot">موافقتك / تعديلك</div><div class="arr">←</div>
+  <div class="step">تقديم بإيقاع بشري</div><div class="arr">←</div>
+  <div class="step">سجل + تقرير</div>
+</div>
+
+<div class="bottom">
+  <div class="box wire">
+    <h3>بروتوكول الموافقة على تليجرام</h3>
+    <ul class="proto">
+      <li class="ok">زرار «موافق» أو رسالة تبدأ بـ«موافق» → اعتماد النص الأصلي</li>
+      <li class="ok">رسالة طويلة (120+ حرف) → نسختك المعدلة هي النص المعتمد</li>
+      <li class="warn">رسالة قصيرة تانية → ملاحظة، مش موافقة</li>
+      <li class="no">مفيش قرار → مفيش تقديم. أوامر /xxx بتتجاهل تمامًا</li>
+      <li>آخر نسخة بتربح، والراقب بيرد عليك فورًا بكل خطوة</li>
+    </ul>
+  </div>
+  <div class="box">
+    <h3>القواعد الذهبية</h3>
+    <ul class="rules">
+      <li>صفر تكلفة: ممنوع أي API مدفوع</li>
+      <li>مفيش باسوردات عند الوكيل أبدًا</li>
+      <li>allowlist للمواقع + HTTP محصّن ضد SSRF</li>
+      <li>سكريبتات الشبكة مش بتكتب ملفات (print only)</li>
+      <li>زرار القتل: اقفل الخدمة وكل حاجة بتقف</li>
+    </ul>
+  </div>
+  <div class="box cost">
+    <div class="zero">0$</div>
+    <div class="per">تكلفة التشغيل الشهرية<br>تليجرام مجاني · موديلات :free · Cua بترخيص MIT · Apps Script مجاني<br>المتطلبات: ويندوز + نت + جوجل + تليجرام</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div>Open Freelance Agent — v4.0 · مخطط الهيكل والعملية · قابل للنسخ والبناء من أي حد</div>
+  <div>MIT License · 2026</div>
+</div>
+
+</body>
+</html>
